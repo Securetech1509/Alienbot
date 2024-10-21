@@ -1,0 +1,102 @@
+# Importing regex and random libraries
+import re
+import random
+
+class AlienBot:
+    # potential negative responses
+    negative_responses = ("no", "nope", "nah", "naw", "not a chance", "sorry")
+    # keywords for exiting the conversation
+    exit_commands = ("quit", "pause", "exit", "goodbye", "bye", "later")
+    # random starter questions
+    random_questions = (
+        "Blzzt... Why you here, Earth creature? ",
+        "Zrrrrt... Many like you? ",
+        "Hummm... What you consume for survival, human? ",
+        "Tell... Zzzz... Life here? Intelligent? ",
+        "Who lead your spee-cies? ",
+        "Visited... other... zrrr... planets, you have? ",
+        "What is your technol-zrrrt? Show me."
+    )
+
+    def __init__(self):
+        self.alienbabble = {
+            'describe_planet_intent': r'.*(tell me about your planet|interested in your planet).*',
+            'answer_why_intent': r'.*(why are you here|why are you asking).*',
+            'cubed_intent': r'.*cube the number (\d+).*'
+        }
+
+    # Define .greet() below:
+    def greet(self):
+        self.name = input("Blip-blop! What you called? ").title()
+        will_help = input(f"Zrrt... Hi {self.name}, I am Zorblat from Xarn. Will you help me... zzz... understand Earth? ").lower()
+
+        if will_help in self.negative_responses:
+            print("Zrrt... No help? Then gooooodbye.")
+            return
+        self.chat()
+
+    # Define .make_exit() here:
+    def make_exit(self, reply):
+        for command in self.exit_commands:
+            if command in reply:
+                print("Bzzzzt... Farewell, Earthling.")
+                return True
+        return False
+
+    # Define .chat() next:
+    def chat(self):
+        reply = input(random.choice(self.random_questions)).lower()
+
+        while not self.make_exit(reply):
+            reply = input(self.match_reply(reply)).lower()
+
+    # Define .match_reply() below:
+    def match_reply(self, reply):
+        for intent, regex_pattern in self.alienbabble.items():
+            found_match = re.match(regex_pattern, reply)
+            if found_match:
+                if intent == 'describe_planet_intent':
+                    return self.describe_planet_intent()
+                elif intent == 'answer_why_intent':
+                    return self.answer_why_intent()
+                elif intent == 'cubed_intent':
+                    return self.cubed_intent(found_match.group(1))
+        return self.no_match_intent()
+
+    # Define .describe_planet_intent():
+    def describe_planet_intent(self):
+        responses = (
+            "Bzzzt... My planet? Zorb-9, floating in Gaarlox. Too hot for you, Earthling. Only strong Zarn live.",
+            "Zorblat from Opidipus... We rule Wayward Galaxies. You? Still stuck on... zrrt... one."
+        )
+        return random.choice(responses)
+
+    # Define .answer_why_intent():
+    def answer_why_intent(self):
+        responses = (
+            "Zzzz... Peace I bring. No harm... maybe.",
+            "I seek data. Earth... strange place. Must understand.",
+            "Bzzzz... Coffee? I heard it good here. Strange brown liquid, yes?"
+        )
+        return random.choice(responses)
+
+    # Define .cubed_intent():
+    def cubed_intent(self, number):
+        number = int(number)
+        cubed_number = number ** 3
+        return f"Zzzzt... Cube of {number} is... {cubed_number}. Math works same here? Strange."
+
+    # Define .no_match_intent():
+    def no_match_intent(self):
+        responses = (
+            "Zzzrttt... I not understand. Explain again.",
+            "Bzzzt... Say more. I need more data.",
+            "Why you say this? Strange human talk...",
+            "Zrrr... Clarify, Earth creature. Your words strange.",
+            "I not sure... Explain more, yes?"
+        )
+        return random.choice(responses)
+
+# Create an instance of AlienBot below:
+alien_bot = AlienBot()
+alien_bot.greet()
